@@ -38,9 +38,7 @@ public class Player_move : MonoBehaviour
     void rotateObject()
     {
         Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
         Plane GroupPlane = new Plane(Vector3.up, Vector3.zero);
-
         float rayLength;
 
         if (GroupPlane.Raycast(cameraRay, out rayLength))

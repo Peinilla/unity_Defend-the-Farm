@@ -18,4 +18,13 @@ public class Bullet : MonoBehaviour
     {
         transform.Translate(Vector3.forward * 0.1f);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Monster")
+        {
+            Destroy(gameObject);
+
+        }
+    }
 }

@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Player_collision : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private Rigidbody rb;
+    void Start()
     {
-        if(other.gameObject.tag == "Monster")
-        {
-
-        }
+        rb = gameObject.GetComponent<Rigidbody>();
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        rb.velocity = Vector3.zero;
     }
 }

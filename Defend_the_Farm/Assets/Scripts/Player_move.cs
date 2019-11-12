@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player_move : MonoBehaviour
 {
-    public Camera camera;
     public GameObject Bullet;
     public Transform FirePos;
     public int speed = 10;
@@ -60,4 +59,5 @@ public class Player_move : MonoBehaviour
         }
         
     }
+
 }

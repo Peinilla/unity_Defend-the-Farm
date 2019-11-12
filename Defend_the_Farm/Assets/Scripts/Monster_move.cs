@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Monster_move : MonoBehaviour
 {
-    public GameObject target;
+    private GameObject target;
     private Vector3 direction;
     private float velocity;
-    private bool isTriger;
+    private bool isMoveable;
+    private bool isAttackable;
+    private bool isLock;
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
+        isMoveable = true;
         target = GameObject.FindWithTag("Player");
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -22,7 +27,7 @@ public class Monster_move : MonoBehaviour
         velocity = 1f * Time.smoothDeltaTime;
         float distance = Vector3.Distance(target.transform.position, transform.position);
 
-        if (distance <= 30.0f && !isTriger)
+        if (distance <= 30.0f && isMoveable && !isLock)
         {
             this.transform.position = new Vector3(transform.position.x + (direction.x * velocity),
                                                    transform.position.y + (direction.y * velocity),
@@ -35,7 +40,7 @@ public class Monster_move : MonoBehaviour
             transform.LookAt(FixedPos);
 
         }
-        else if(isTriger){
+        else{
             Vector3 FixedPos =
                new Vector3(
                target.transform.position.x,
@@ -43,31 +48,39 @@ public class Monster_move : MonoBehaviour
                target.transform.position.z);
             transform.LookAt(FixedPos);
         }
-        else
-        {
-            velocity = 0.0f;
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            isTriger = true;
+            isMoveable = false;
+            isAttackable = true;
             StartCoroutine(WaitForIt());
+            //Attack
         }
 
         if (other.gameObject.tag == "Bullet")
         {
             //dead
-            isTriger = true;
+            isMoveable = false;
             Destroy(gameObject, 1);
 
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        isMoveable = true;
+        isAttackable = false;
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        rb.velocity = Vector3.zero;
+    }
     IEnumerator WaitForIt()
     {
+        isLock = true;
         yield return new WaitForSeconds(1.0f);
-        isTriger = false;
+        isLock = false;
     }
 }

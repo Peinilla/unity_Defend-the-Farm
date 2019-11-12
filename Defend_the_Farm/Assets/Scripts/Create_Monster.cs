@@ -7,8 +7,6 @@ public class Create_Monster : MonoBehaviour
 {
 
     public GameObject Monster;
-    public GameObject Player;
-    public Transform MonPos;
 
 
     // Start is called before the first frame update
@@ -27,7 +25,7 @@ public class Create_Monster : MonoBehaviour
     {
         while(true)
         {
-            float max_time_range = 3.0f;
+            float max_time_range = 2.0f;
             float n = Random.Range(0, max_time_range);
             // 좌표: -20 ~ +20
             
@@ -39,8 +37,7 @@ public class Create_Monster : MonoBehaviour
             position.x = Random.Range(-20, max_x_range);
             position.z = Random.Range(-20, max_z_range);
             position.y = 1.0f;
-
-            Debug.Log("몬스터 생성");
+           
 
             GameObject monster = Instantiate(Monster, position, Quaternion.identity);
             //monster.GetComponent<Monster_move>().target = Player;

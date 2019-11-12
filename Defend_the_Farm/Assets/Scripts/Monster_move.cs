@@ -12,7 +12,7 @@ public class Monster_move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        target = GameObject.FindWithTag("Player");
     }
 
     // Update is called once per frame
@@ -22,7 +22,7 @@ public class Monster_move : MonoBehaviour
         velocity = 1f * Time.smoothDeltaTime;
         float distance = Vector3.Distance(target.transform.position, transform.position);
 
-        if (distance <= 10.0f && !isTriger)
+        if (distance <= 30.0f && !isTriger)
         {
             this.transform.position = new Vector3(transform.position.x + (direction.x * velocity),
                                                    transform.position.y + (direction.y * velocity),

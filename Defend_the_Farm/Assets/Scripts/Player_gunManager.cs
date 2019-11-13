@@ -20,7 +20,7 @@ public class Player_gunManager : MonoBehaviour
     {
         gunContainer = GameObject.Find("R_hand_container").gameObject;
         gun_anim = gunContainer.GetComponent<Animator>();
-        myGun = type.handgun;
+        myGun = type.shotgun;
         delay = 0.8f;
         isReady = true;
     }

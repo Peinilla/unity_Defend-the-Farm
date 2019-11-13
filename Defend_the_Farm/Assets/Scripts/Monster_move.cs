@@ -85,10 +85,4 @@ public class Monster_move : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
     }
-    IEnumerator WaitForIt()
-    {
-        isLock = true;
-        yield return new WaitForSeconds(1.0f);
-        isLock = false;
-    }
 }

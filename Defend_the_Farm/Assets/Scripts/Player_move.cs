@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Player_move : MonoBehaviour
 {
-    public GameObject Bullet;
-    public Transform FirePos;
+
     public int speed = 10;
     private Animator anim;
     // Start is called before the first frame update
     void Start()
     {
         anim = transform.Find("Model").gameObject.GetComponent<Animator>();
-
     }
 
     // Update is called once per frame
@@ -20,7 +18,6 @@ public class Player_move : MonoBehaviour
     {
         moveObject();
         rotateObject();
-        shoot();
     }
 
     void moveObject()
@@ -75,13 +72,6 @@ public class Player_move : MonoBehaviour
         }
     }
 
-    void shoot()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Instantiate(Bullet, FirePos.transform.position, FirePos.transform.rotation);
-        }
-        
-    }
+    
 
 }

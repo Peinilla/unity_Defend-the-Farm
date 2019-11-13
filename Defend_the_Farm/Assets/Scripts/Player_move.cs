@@ -7,11 +7,12 @@ public class Player_move : MonoBehaviour
     public GameObject Bullet;
     public Transform FirePos;
     public int speed = 10;
-
+    private Animator anim;
     // Start is called before the first frame update
     void Start()
     {
-        
+        anim = transform.Find("Model").gameObject.GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -25,13 +26,36 @@ public class Player_move : MonoBehaviour
     void moveObject()
 
     {
+        bool isKeyDown = false;
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime, Space.World);
+            anim.SetBool("isWalk", true);
+            isKeyDown = true;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(Vector3.right * speed * Time.smoothDeltaTime * -1, Space.World);
+            anim.SetBool("isWalk", true);
+            isKeyDown = true;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * -1, Space.World);
+            anim.SetBool("isWalk", true);
+            isKeyDown = true;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(Vector3.right * speed * Time.smoothDeltaTime, Space.World);
+            anim.SetBool("isWalk", true);
+            isKeyDown = true;
+        }
 
-        float keyHorizontal = Input.GetAxis("Horizontal");
-        float keyVertical = Input.GetAxis("Vertical");
-        
-        transform.Translate(Vector3.right * speed * Time.smoothDeltaTime * keyHorizontal, Space.World);
-        transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * keyVertical, Space.World);
-
+        if (!isKeyDown)
+        {
+            anim.SetBool("isWalk", false);
+        }
     }
 
     void rotateObject()

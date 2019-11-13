@@ -11,6 +11,8 @@ public class Monster_move : MonoBehaviour
     private bool isAttackable;
     private bool isLock;
     private Rigidbody rb;
+    private Animator anim;
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +20,8 @@ public class Monster_move : MonoBehaviour
         isMoveable = true;
         target = GameObject.FindWithTag("Player");
         rb = gameObject.GetComponent<Rigidbody>();
+        anim = transform.Find("Z_Model").gameObject.GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -29,6 +33,7 @@ public class Monster_move : MonoBehaviour
 
         if (distance <= 30.0f && isMoveable && !isLock)
         {
+            anim.SetBool("isWalk", true);
             this.transform.position = new Vector3(transform.position.x + (direction.x * velocity),
                                                    transform.position.y + (direction.y * velocity),
                                                      transform.position.z+ (direction.z * velocity));
@@ -41,6 +46,8 @@ public class Monster_move : MonoBehaviour
 
         }
         else{
+            anim.SetBool("isWalk", false);
+
             Vector3 FixedPos =
                new Vector3(
                target.transform.position.x,
@@ -54,15 +61,16 @@ public class Monster_move : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            anim.Play("Z_attack_A");
             isMoveable = false;
             isAttackable = true;
-            StartCoroutine(WaitForIt());
             //Attack
         }
 
         if (other.gameObject.tag == "Bullet")
         {
             //dead
+            anim.SetBool("isDead", true);
             isMoveable = false;
             Destroy(gameObject, 1);
 

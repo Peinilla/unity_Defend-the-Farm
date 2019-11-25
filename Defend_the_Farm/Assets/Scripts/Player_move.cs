@@ -24,25 +24,26 @@ public class Player_move : MonoBehaviour
 
     {
         bool isKeyDown = false;
-        if (Input.GetKey(KeyCode.W))
+        Vector3 pos = transform.position;
+        if (Input.GetKey(KeyCode.W) && pos.z <= 40)
         {
             transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) && pos.x >= -40)
         {
             transform.Translate(Vector3.right * speed * Time.smoothDeltaTime * -1, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) && pos.z >= -40)
         {
             transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * -1, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) && pos.x <= 40)
         {
             transform.Translate(Vector3.right * speed * Time.smoothDeltaTime, Space.World);
             anim.SetBool("isWalk", true);

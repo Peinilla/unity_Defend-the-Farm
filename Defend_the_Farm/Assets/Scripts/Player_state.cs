@@ -5,11 +5,16 @@ using UnityEngine.UI;
 
 public class Player_state : MonoBehaviour
 {
-
     public float damagedDelay = 2.0f;
 
-    private Image img;
+    private int hp = 3;
+    private Image Ui_damagedImage;
+    private GameObject[] Ui_hpObj;
     private Rigidbody rb;
+
+    private Sprite hp0;
+    private Sprite hp1;
+
     private float time;
     private float alpa;
     private bool isDamaged;
@@ -17,7 +22,12 @@ public class Player_state : MonoBehaviour
 
     void Start()
     {
-        img = GameObject.Find("UI_Damaged").gameObject.GetComponent<Image>();
+        Ui_damagedImage = GameObject.Find("UI_Damaged").gameObject.GetComponent<Image>();
+        Ui_hpObj = GameObject.FindGameObjectsWithTag("Hp_image");
+
+        hp0 = Resources.Load<Sprite>("Image/hp_02") as Sprite;
+        hp1 = Resources.Load<Sprite>("Image/hp_01") as Sprite;
+
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
@@ -27,7 +37,7 @@ public class Player_state : MonoBehaviour
         {
             time += Time.deltaTime / 1.5f;
             alpa = Mathf.Lerp(1, 0, time);
-            img.color = new Color(1, 1, 1, alpa);
+            Ui_damagedImage.color = new Color(1, 1, 1, alpa);
         }   
     }
 
@@ -48,7 +58,38 @@ public class Player_state : MonoBehaviour
     {
         if (!isDelay)
         {
-            StartCoroutine("damaged_modifyUI");
+            hp--;
+            switch (hp)
+            {
+                case 0:
+                    Ui_hpObj[0].GetComponent<Image>().sprite = hp0;
+                    Ui_hpObj[1].GetComponent<Image>().sprite = hp0;
+                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
+                    break;
+                case 1:
+                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
+                    Ui_hpObj[1].GetComponent<Image>().sprite = hp0;
+                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
+                    break;
+                case 2:
+                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
+                    Ui_hpObj[1].GetComponent<Image>().sprite = hp1;
+                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
+                    break;
+                case 3:
+                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
+                    Ui_hpObj[1].GetComponent<Image>().sprite = hp1;
+                    Ui_hpObj[2].GetComponent<Image>().sprite = hp1;
+                    break;
+            }
+            if (hp != 0)
+            {
+                StartCoroutine("damaged_modifyUI");
+            }
+            else
+            {
+                //Game End
+            }
         }
 
     }
@@ -59,10 +100,10 @@ public class Player_state : MonoBehaviour
 
         time = 0;
         isDamaged = true;
-        img.color = new Color(1, 1, 1, 1);
+        Ui_damagedImage.color = new Color(1, 1, 1, 1);
         yield return new WaitForSeconds(1.2f);
         isDamaged = false;
-        img.color = new Color(1, 1, 1, 0);
+        Ui_damagedImage.color = new Color(1, 1, 1, 0);
 
         yield return new WaitForSeconds(damagedDelay - 1.2f);
         isDelay = false;

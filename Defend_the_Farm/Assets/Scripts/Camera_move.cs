@@ -7,8 +7,8 @@ public class Camera_move : MonoBehaviour
     public GameObject target;
 
     public float offsetX = 0;
-    public float offsetY = 5;
-    public float offsetZ = -2.5f;
+    public float offsetY = 4;
+    public float offsetZ = -2.1f;
 
     public float DelayTime = 5;
 

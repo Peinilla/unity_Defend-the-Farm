@@ -7,6 +7,7 @@ public class Player_move : MonoBehaviour
 
     public int speed = 10;
     private Animator anim;
+    private float bound = 20;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,25 +26,25 @@ public class Player_move : MonoBehaviour
     {
         bool isKeyDown = false;
         Vector3 pos = transform.position;
-        if (Input.GetKey(KeyCode.W) && pos.z <= 40)
+        if (Input.GetKey(KeyCode.W) && pos.z <= bound)
         {
             transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.A) && pos.x >= -40)
+        if (Input.GetKey(KeyCode.A) && pos.x >= -bound)
         {
             transform.Translate(Vector3.right * speed * Time.smoothDeltaTime * -1, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.S) && pos.z >= -40)
+        if (Input.GetKey(KeyCode.S) && pos.z >= -bound)
         {
             transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * -1, Space.World);
             anim.SetBool("isWalk", true);
             isKeyDown = true;
         }
-        if (Input.GetKey(KeyCode.D) && pos.x <= 40)
+        if (Input.GetKey(KeyCode.D) && pos.x <= bound)
         {
             transform.Translate(Vector3.right * speed * Time.smoothDeltaTime, Space.World);
             anim.SetBool("isWalk", true);

@@ -26,20 +26,17 @@ public class Player_gunManager : MonoBehaviour
 
     private int default_Handgun = 6;
     private int default_Rifle = 50;
-    private int default_Shotgun = 1;
+    private int default_Shotgun = 8;
 
 
     private void Awake()
     {
         gunContainer = GameObject.Find("R_hand_container").gameObject;
         gun_anim = gunContainer.GetComponent<Animator>();
-        myGun = type.handgun;
-        delay = 0.8f;
-        bullet_Total = -1;
-        bullet_Loaded = default_Handgun;
         isReady = true;
         bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
         bulletUI_total.GetComponent<Text>().text = "";
+
         ChangeGun(type.shotgun);
 
     }
@@ -47,7 +44,20 @@ public class Player_gunManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && isReady)
+        //
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            ChangeGun(type.handgun);
+        }else if (Input.GetKey(KeyCode.Alpha2))
+        {
+            ChangeGun(type.rifle);
+        }else if (Input.GetKey(KeyCode.Alpha3))
+        {
+            ChangeGun(type.shotgun);
+        }
+        //
+
+        if (Input.GetMouseButton(0) && isReady)
         {
             if (bullet_Loaded != 0)
             {
@@ -105,6 +115,18 @@ public class Player_gunManager : MonoBehaviour
 
     void ChangeGun(type gun)
     {
+        switch (myGun)
+        {
+            case type.handgun:
+                gunContainer.transform.Find("w_handgun").gameObject.SetActive(false);
+                break;
+            case type.rifle:
+                gunContainer.transform.Find("w_rifle").gameObject.SetActive(false);
+                break;
+            case type.shotgun:
+                gunContainer.transform.Find("w_shotgun").gameObject.SetActive(false);
+                break;
+        }
         switch (gun)
         {
             case type.handgun:
@@ -112,18 +134,24 @@ public class Player_gunManager : MonoBehaviour
                 delay = 0.8f;
                 bullet_Total = -1;
                 bullet_Loaded = default_Handgun;
+                FirePos.transform.localPosition = new Vector3(0.21f, 0.091f, 0.5f);
+                gunContainer.transform.Find("w_handgun").gameObject.SetActive(true);
                 break;
             case type.rifle:
                 myGun = type.rifle;
                 delay = 0.1f;
                 bullet_Total = default_Rifle * 4;
                 bullet_Loaded = default_Rifle;
+                FirePos.transform.localPosition = new Vector3(0.21f,0.091f,0.9f);
+                gunContainer.transform.Find("w_rifle").gameObject.SetActive(true);
                 break;
             case type.shotgun:
                 myGun = type.shotgun;
                 delay = 1f;
-                bullet_Total = default_Shotgun * 1;
+                bullet_Total = default_Shotgun * 4;
                 bullet_Loaded = default_Shotgun;
+                FirePos.transform.localPosition = new Vector3(0.21f, 0.091f, 0.85f);
+                gunContainer.transform.Find("w_shotgun").gameObject.SetActive(true);
                 break;
         }
         bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";

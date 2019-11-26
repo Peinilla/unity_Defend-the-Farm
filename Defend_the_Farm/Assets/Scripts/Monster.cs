@@ -1,11 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Random;
 
 public class Monster : MonoBehaviour
 {
     public int hp = 1;
-    public float attackDelay = 0.05f;
+    public float attackDelay = 0.2f;
+
+    public GameObject head;
+
+    private float speed;
+    
 
     private GameObject target;
     private Vector3 direction;
@@ -15,7 +21,10 @@ public class Monster : MonoBehaviour
     private bool isAttackable;
     private Rigidbody rb;
     private Animator anim;
+    private Material body_Material;
+    private Material head_Material;
 
+    public ParticleSystem blood;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +33,14 @@ public class Monster : MonoBehaviour
         target = GameObject.FindWithTag("Player");
         rb = gameObject.GetComponent<Rigidbody>();
         anim = transform.Find("Z_Model").gameObject.GetComponent<Animator>();
+        body_Material = transform.Find("Z_Model").gameObject.transform.Find("Body_01_tanktop").gameObject.GetComponent<Renderer>().material;
+        head_Material = head.gameObject.GetComponent<Renderer>().material;
+        Color c = new Color(Random.Range(0.7f, 1), Random.Range(0.7f, 1), Random.Range(0.7f, 1), 1);
+        body_Material.color = c;
+        head_Material.color = c;
+        speed = Random.Range(1.4f, 2f);
+
+        blood.Pause();
 
     }
 
@@ -31,10 +48,10 @@ public class Monster : MonoBehaviour
     void Update()
     {
         direction = (target.transform.position - transform.position).normalized;
-        velocity = 1f * Time.smoothDeltaTime;
+        velocity = speed * Time.smoothDeltaTime;
         float distance = Vector3.Distance(target.transform.position, transform.position);
 
-        if (distance <= 30.0f && isMoveable)
+        if (distance <= 50.0f && isMoveable)
         {
             anim.SetBool("isWalk", true);
             this.transform.position = new Vector3(transform.position.x + (direction.x * velocity),
@@ -48,7 +65,7 @@ public class Monster : MonoBehaviour
             transform.LookAt(FixedPos);
 
         }
-        else{
+        else if( hp!=0 ){
             anim.SetBool("isWalk", false);
 
             Vector3 FixedPos =
@@ -70,7 +87,13 @@ public class Monster : MonoBehaviour
                 //dead
                 anim.SetBool("isDead", true);
                 isMoveable = false;
-                Destroy(gameObject, 1);
+                gameObject.GetComponent<BoxCollider>().enabled = false;
+                transform.Find("collider").gameObject.GetComponent<BoxCollider>().enabled = false;
+                blood.Play();
+                rb.velocity = Vector3.zero;
+                StopAllCoroutines();
+
+                Destroy(gameObject, 2);
             }
             else
             {
@@ -110,7 +133,6 @@ public class Monster : MonoBehaviour
         yield return new WaitForSeconds(attackDelay);
         if (isAttackable)
         {
-            Debug.Log("aaaaa");
             GameObject.FindWithTag("Player").gameObject.GetComponent<Player_state>().damaged();
         }
     }

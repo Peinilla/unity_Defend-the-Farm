@@ -17,8 +17,11 @@ public class Player_move : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveObject();
-        rotateObject();
+        if (Time.timeScale != 0)
+        {
+            moveObject();
+            rotateObject();
+        }
     }
 
     void moveObject()
@@ -66,9 +69,7 @@ public class Player_move : MonoBehaviour
         if (GroupPlane.Raycast(cameraRay, out rayLength))
 
         {
-
             Vector3 pointTolook = cameraRay.GetPoint(rayLength);
-
             transform.LookAt(new Vector3(pointTolook.x, transform.position.y, pointTolook.z));
 
         }

@@ -12,6 +12,16 @@ public class Camera_move : MonoBehaviour
 
     public float DelayTime = 5;
 
+    private void Awake()
+    {
+        Vector3 FixedPos =
+               new Vector3(
+               target.transform.position.x + offsetX,
+               target.transform.position.y + offsetY,
+               target.transform.position.z + offsetZ);
+        transform.position = FixedPos;
+    }
+
     // Update is called once per frame
     void Update()
     {

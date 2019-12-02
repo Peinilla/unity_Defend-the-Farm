@@ -9,7 +9,10 @@ public class Player_state : MonoBehaviour
 
     private int hp = 3;
     private Image Ui_damagedImage;
-    private GameObject[] Ui_hpObj;
+    private GameObject Ui_hp0;
+    private GameObject Ui_hp1;
+    private GameObject Ui_hp2;
+
     private Rigidbody rb;
     private Material material;
 
@@ -23,11 +26,15 @@ public class Player_state : MonoBehaviour
     private bool isTwinkle;
     private Color c0 = new Color(0, 0, 0);
     private Color c1 = new Color(0.2f, 0.2f, 0.2f);
+    private Vector3 initPos;
 
     private void Awake()
     {
         Ui_damagedImage = GameObject.Find("UI_Damaged").gameObject.GetComponent<Image>();
-        Ui_hpObj = GameObject.FindGameObjectsWithTag("Hp_image");
+        Ui_hp0 = GameObject.Find("hp_Image0").gameObject;
+        Ui_hp1 = GameObject.Find("hp_Image1").gameObject;
+        Ui_hp2 = GameObject.Find("hp_Image2").gameObject;
+
 
         hp0 = Resources.Load<Sprite>("Image/hp_02") as Sprite;
         hp1 = Resources.Load<Sprite>("Image/hp_01") as Sprite;
@@ -35,12 +42,20 @@ public class Player_state : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
 
         material = transform.Find("Model").gameObject.transform.Find("Body_09_jacket").gameObject.GetComponent<Renderer>().sharedMaterial;
-        material.SetColor("_EmissionColor", c0);
-
+        initPos = transform.transform.position;
+        init();
     }
 
     private void Update()
     {
+
+        //
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            recovery();
+        }
+        //
+
         if (isDamaged)
         {
             time += Time.deltaTime / 1.5f;
@@ -68,6 +83,19 @@ public class Player_state : MonoBehaviour
         }
     }
 
+    public void init()
+    {
+        material.SetColor("_EmissionColor", c0);
+        hp = 3;
+        Ui_hp0.GetComponent<Image>().sprite = hp1;
+        Ui_hp1.GetComponent<Image>().sprite = hp1;
+        Ui_hp2.GetComponent<Image>().sprite = hp1;
+
+        transform.position = initPos;
+        //GameObject.Find("Score_Text").GetComponent<Text>().text = "00000";
+
+    }
+
     public void damaged()
     {
         if (!isDelay)
@@ -76,24 +104,13 @@ public class Player_state : MonoBehaviour
             switch (hp)
             {
                 case 0:
-                    Ui_hpObj[0].GetComponent<Image>().sprite = hp0;
-                    Ui_hpObj[1].GetComponent<Image>().sprite = hp0;
-                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
+                    Ui_hp0.GetComponent<Image>().sprite = hp0;
                     break;
                 case 1:
-                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
-                    Ui_hpObj[1].GetComponent<Image>().sprite = hp0;
-                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
+                    Ui_hp1.GetComponent<Image>().sprite = hp0;
                     break;
                 case 2:
-                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
-                    Ui_hpObj[1].GetComponent<Image>().sprite = hp1;
-                    Ui_hpObj[2].GetComponent<Image>().sprite = hp0;
-                    break;
-                case 3:
-                    Ui_hpObj[0].GetComponent<Image>().sprite = hp1;
-                    Ui_hpObj[1].GetComponent<Image>().sprite = hp1;
-                    Ui_hpObj[2].GetComponent<Image>().sprite = hp1;
+                    Ui_hp2.GetComponent<Image>().sprite = hp0;
                     break;
             }
             if (hp != 0)
@@ -102,10 +119,11 @@ public class Player_state : MonoBehaviour
             }
             else
             {
+                GameObject.Find("Canvas").transform.Find("DeadEnd").gameObject.SetActive(true);
+
                 //Game End
             }
         }
-
     }
     IEnumerator damaged_twinkle()
     {
@@ -131,5 +149,26 @@ public class Player_state : MonoBehaviour
 
         yield return new WaitForSeconds(damagedDelay - 1.2f);
         isDelay = false;
+    }
+
+    public void recovery()
+    {
+        if (hp == 3)
+        {
+            return;
+        }
+        hp++;
+        switch (hp)
+        {
+            case 1:
+                Ui_hp0.GetComponent<Image>().sprite = hp1;
+                break;
+            case 2:
+                Ui_hp1.GetComponent<Image>().sprite = hp1;
+                break;
+            case 3:
+                Ui_hp2.GetComponent<Image>().sprite = hp1;
+                break;
+        }
     }
 }

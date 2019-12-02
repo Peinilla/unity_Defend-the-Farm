@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Random;
+using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Monster : MonoBehaviour
     private GameObject target;
     private Vector3 direction;
     private float velocity;
+    private bool isWaking;
     private bool isMoveable;
     private bool isPlayAttack;
     private bool isAttackable;
@@ -40,7 +42,9 @@ public class Monster : MonoBehaviour
         head_Material.color = c;
         speed = Random.Range(1.4f, 2f);
 
-        blood.Pause();
+        blood.Stop();
+        blood.Clear();
+        wake();
 
     }
 
@@ -65,7 +69,8 @@ public class Monster : MonoBehaviour
             transform.LookAt(FixedPos);
 
         }
-        else if( hp!=0 ){
+        else if(!isWaking && hp != 0)
+        {
             anim.SetBool("isWalk", false);
 
             Vector3 FixedPos =
@@ -93,6 +98,12 @@ public class Monster : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 StopAllCoroutines();
 
+                //score
+                int score = int.Parse(GameObject.Find("Score_Text").GetComponent<Text>().text);
+                score++;
+                GameObject.Find("Score_Text").GetComponent<Text>().text = score.ToString("D5");
+
+                //destroy
                 Destroy(gameObject, 2);
             }
             else
@@ -102,6 +113,14 @@ public class Monster : MonoBehaviour
 
         }
     }
+
+    private void wake()
+    {
+        anim.Play("Z_wake");
+        StartCoroutine("waking");
+    
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (!isPlayAttack)
@@ -145,5 +164,20 @@ public class Monster : MonoBehaviour
         {
             isMoveable = true;
         }
+    }
+
+    IEnumerator waking()
+    {
+        isPlayAttack = true;
+        isMoveable = false;
+        isWaking = true;
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+        transform.Find("collider").gameObject.GetComponent<BoxCollider>().enabled = false;
+        yield return new WaitForSeconds(2f);
+        isPlayAttack = false;
+        isMoveable = true;
+        isWaking = false;
+        gameObject.GetComponent<BoxCollider>().enabled = true;
+        transform.Find("collider").gameObject.GetComponent<BoxCollider>().enabled = true;
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - Bullet
   - Monster
   - Hp_image
+  - Item
   layers:
   - Default
   - TransparentFX

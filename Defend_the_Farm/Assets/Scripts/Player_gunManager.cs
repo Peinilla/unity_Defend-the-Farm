@@ -17,6 +17,7 @@ public class Player_gunManager : MonoBehaviour
 
     private GameObject gunContainer;
     private Animator gun_anim;
+    private AudioSource reload_sound;
     private type myGun;
     private float delay;
     private bool isReady;
@@ -33,17 +34,16 @@ public class Player_gunManager : MonoBehaviour
     {
         gunContainer = GameObject.Find("R_hand_container").gameObject;
         gun_anim = gunContainer.GetComponent<Animator>();
-        isReady = true;
-        bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
-        bulletUI_total.GetComponent<Text>().text = "";
+        reload_sound = GetComponent<AudioSource>();
 
-        ChangeGun(type.shotgun);
-
+        init();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Time.timeScale == 0) { return; }
+
         //
         if (Input.GetKey(KeyCode.Alpha1))
         {
@@ -61,13 +61,7 @@ public class Player_gunManager : MonoBehaviour
         {
             if (bullet_Loaded != 0)
             {
-                bullet_Loaded--;
-                bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
                 shoot();
-                if(bullet_Loaded == 0 && bullet_Total == 0)
-                {
-                    ChangeGun(type.handgun);
-                }
             }
             else
             {
@@ -81,77 +75,104 @@ public class Player_gunManager : MonoBehaviour
         }
     }
 
-    void shoot()
+    public void init()
     {
-            gun_anim.Play("shoot");
-            switch (myGun)
-            {
-                case type.handgun:
-                    Instantiate(Bullet, FirePos.transform.position, FirePos.transform.rotation);
-                    break;
-                case type.rifle:
-                    Instantiate(Bullet, FirePos.transform.position, FirePos.transform.rotation);
-                    break;
-                case type.shotgun:
-                    Vector3 angle = transform.eulerAngles;
-                    float a = 10;
-                    angle.y -= 2*a;
-                    Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
-                    angle.y += a;
-                    Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
-                    angle.y += a;
-                    Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
-                    angle.y += a;
-                    Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
-                    angle.y += a;
-                    Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
-                    break;
-            }
-            isReady = false;
-            StartCoroutine(WaitForIt());
-      
+        isReady = true;
+        bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
+        bulletUI_total.GetComponent<Text>().text = "";
 
+        ChangeGun(type.handgun);
     }
 
-    void ChangeGun(type gun)
+    void shoot()
+    {
+        bullet_Loaded--;
+        bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
+        gun_anim.Play("shoot");
+
+        switch (myGun)
+        {
+            case type.handgun:
+                Instantiate(Bullet, FirePos.transform.position, FirePos.transform.rotation);
+                break;
+            case type.rifle:
+                Vector3 randomAngle = transform.eulerAngles;
+                randomAngle.y += Random.Range(-10, 10);
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(randomAngle));
+                break;
+            case type.shotgun:
+                Vector3 angle = transform.eulerAngles;
+                float a = 10;
+                angle.y -= 2*a;
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
+                angle.y += a;
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
+                angle.y += a;
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
+                angle.y += a;
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
+                angle.y += a;
+                Instantiate(Bullet, FirePos.transform.position, Quaternion.Euler(angle));
+                break;
+        }
+
+        if(bullet_Loaded == 0 && bullet_Total == 0)
+        {
+            ChangeGun(type.handgun);
+        }
+
+        if (bullet_Loaded == 0)
+        {
+            isReady = false;
+            StartCoroutine(autoReload());
+        }
+        else
+        {
+            isReady = false;
+            StartCoroutine(WaitForIt());
+
+        }
+    }
+
+    public void ChangeGun(type gun)
     {
         switch (myGun)
         {
             case type.handgun:
-                gunContainer.transform.Find("w_handgun").gameObject.SetActive(false);
+                gunContainer.transform.Find("w_handgun").gameObject.GetComponent<MeshRenderer>().enabled = false;
                 break;
             case type.rifle:
-                gunContainer.transform.Find("w_rifle").gameObject.SetActive(false);
+                gunContainer.transform.Find("w_rifle").gameObject.GetComponent<MeshRenderer>().enabled = false;
                 break;
             case type.shotgun:
-                gunContainer.transform.Find("w_shotgun").gameObject.SetActive(false);
+                gunContainer.transform.Find("w_shotgun").gameObject.GetComponent<MeshRenderer>().enabled = false;
                 break;
         }
         switch (gun)
         {
             case type.handgun:
                 myGun = type.handgun;
-                delay = 0.8f;
+                delay = 0.5f;
                 bullet_Total = -1;
                 bullet_Loaded = default_Handgun;
                 FirePos.transform.localPosition = new Vector3(0.21f, 0.091f, 0.5f);
-                gunContainer.transform.Find("w_handgun").gameObject.SetActive(true);
+                gunContainer.transform.Find("w_handgun").gameObject.GetComponent<MeshRenderer>().enabled = true;
                 break;
             case type.rifle:
                 myGun = type.rifle;
                 delay = 0.1f;
-                bullet_Total = default_Rifle * 4;
+                bullet_Total = default_Rifle * 2;
                 bullet_Loaded = default_Rifle;
                 FirePos.transform.localPosition = new Vector3(0.21f,0.091f,0.9f);
-                gunContainer.transform.Find("w_rifle").gameObject.SetActive(true);
+                gunContainer.transform.Find("w_rifle").gameObject.GetComponent<MeshRenderer>().enabled = true;
                 break;
             case type.shotgun:
                 myGun = type.shotgun;
                 delay = 1f;
-                bullet_Total = default_Shotgun * 4;
+                bullet_Total = default_Shotgun * 2;
                 bullet_Loaded = default_Shotgun;
                 FirePos.transform.localPosition = new Vector3(0.21f, 0.091f, 0.85f);
-                gunContainer.transform.Find("w_shotgun").gameObject.SetActive(true);
+                gunContainer.transform.Find("w_shotgun").gameObject.GetComponent<MeshRenderer>().enabled = true;
                 break;
         }
         bulletUI_loaded.GetComponent<Text>().text = bullet_Loaded + "";
@@ -171,9 +192,15 @@ public class Player_gunManager : MonoBehaviour
 
         isReady = false;
         //
-        // 리로드 효과음
+        //reload_sound.Play();
         StartCoroutine(WaitForReload());
 
+    }
+
+    IEnumerator autoReload()
+    {
+        yield return new WaitForSeconds(0.5f);
+        reload();
     }
 
     IEnumerator WaitForIt()

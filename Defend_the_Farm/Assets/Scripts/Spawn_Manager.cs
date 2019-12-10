@@ -8,9 +8,8 @@ public class Spawn_Manager : MonoBehaviour
 
     public GameObject Monster;
     public GameObject itemBox;
-
-    public int day;
-
+    
+    private float max_time_range = 1.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,12 +26,18 @@ public class Spawn_Manager : MonoBehaviour
         
     }
 
+    public void modifyDiff()
+    {
+        if (max_time_range > 0.7f) {
+            max_time_range -= 0.1f;
+        }
+    }
+
     IEnumerator CreateMonster()
     {
         while(true)
         {
-            float max_time_range = 0.8f;
-            float n = Random.Range(0, max_time_range);
+            float n = Random.Range(0.3f, max_time_range);
             // 좌표: -20 ~ +20
             
 

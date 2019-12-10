@@ -49,7 +49,11 @@ public class Info_Manager : MonoBehaviour
         int score = int.Parse(GameObject.Find("Score_Text").GetComponent<Text>().text);
         score += 100;
         GameObject.Find("Score_Text").GetComponent<Text>().text = score.ToString("D5");
+        //diff
+        GameObject.Find("SpawnManager").GetComponent<Spawn_Manager>().modifyDiff();
+
         //
+
         Time.timeScale = 1;
     }
 }

@@ -26,12 +26,17 @@ public class Light_Move : MonoBehaviour
         angle_Time += Time.deltaTime / DayTime;
         angle = Mathf.Lerp(start, end, angle_Time);
         transform.localRotation = Quaternion.Euler(0, angle, 0);
-
-
+       
     }
 
     public void init()
     {
         angle_Time = 0;
+    }
+
+    public void modifyTime(int n)
+    {
+        DayTime = n;
+        init();
     }
 }

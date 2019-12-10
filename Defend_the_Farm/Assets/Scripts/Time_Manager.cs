@@ -9,7 +9,7 @@ public class Time_Manager : MonoBehaviour
     private Text timeText;
     private GameObject infoWindow;
     int time;
-
+    private int t = 90;
 
     private void Awake()
     {
@@ -27,14 +27,23 @@ public class Time_Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKey(KeyCode.Alpha6) )
+        {
+            time = 1;
+        }
     }
 
     public void init()
     {
-        time = 90;
-        timeText.text = time.ToString("D3");
+        time = t;
+        timeText.text = time.ToString("D2");
         StopAllCoroutines();
+    }
+
+    public void modifyT(int n)
+    {
+        t = n;
+        init();
     }
 
     public void pause()
@@ -46,14 +55,14 @@ public class Time_Manager : MonoBehaviour
     {
         StartCoroutine("timer");
     }
-
+    
     IEnumerator timer()
     {
         while (time != 0)
         {
             yield return new WaitForSeconds(1f);
             time--;
-            timeText.text = time.ToString("D3");
+            timeText.text = time.ToString("D2");
         }
 
         pause();
